@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "laser.hpp"
+#include "obstacle.hpp"
 #include "raylib.h"
 #include "spaceship.hpp"
 #include <vector>
@@ -18,6 +19,7 @@ Game::Game() {
   for (auto &laser : ship.lasers) {
     laser.Draw();
   }
+  obstacles = createObstacles();
 }
 
 void Game::updateAll() {
@@ -44,6 +46,10 @@ void Game::updateAll() {
   deleteInactiveLasers();
   std::cout << "Vector size: " << ship.lasers.size();
   // Laser::Update();
+
+  for (auto &obstacle : obstacles) {
+    obstacle.Draw();
+  }
 }
 
 void Game::deleteInactiveLasers() {
@@ -55,4 +61,17 @@ void Game::deleteInactiveLasers() {
       ++it;
     }
   }
+}
+
+std::vector<Obstacle> Game::createObstacles() {
+
+  int obstaclewidth = Obstacle::grid[0].size() * 3;
+
+  float gap = (GetScreenWidth() - (4 * obstaclewidth)) / 5;
+
+  for (int i = 0; i < 4; i++) {
+    float offsetX = (i + 1) * gap + i * obstaclewidth;
+    obstacles.push_back(Obstacle({offsetX, float(GetScreenHeight() - 100)}));
+  }
+  return obstacles;
 }

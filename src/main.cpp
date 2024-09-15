@@ -1,8 +1,12 @@
 
+#include "block.cpp"
+#include "block.hpp"
 #include "game.cpp"
 #include "game.hpp"
 #include "laser.cpp"
 #include "laser.hpp"
+#include "obstacle.cpp"
+#include "obstacle.hpp"
 #include "spaceship.cpp"
 #include "spaceship.hpp"
 #include <iostream>
@@ -26,7 +30,6 @@ int main() {
   while (!WindowShouldClose()) {
 
     BeginDrawing();
-
     ClearBackground(grey); // every frame there is a new clear background so
                            // that there isnt old artifacts from previous frames
     game.updateAll();
