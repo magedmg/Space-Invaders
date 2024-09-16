@@ -24,24 +24,33 @@ Game::Game() {
   aliens = createAliens();
   direction = 1;
   alienshiplaserinterval = 0;
+  mysteryshipspawninterval = GetRandomValue(10, 20);
+  timeLastSpawn = 0.0;
 }
 
 void Game::updateAll() {
+
+  double currentTime = GetTime();
+
+  if (currentTime - timeLastSpawn > mysteryshipspawninterval) {
+    mysteryship.Spawn();
+    timeLastSpawn = GetTime();
+    mysteryshipspawninterval = GetRandomValue(10, 20);
+  }
+  mysteryship.Draw();
+  mysteryship.Update();
+
   ship.Draw();
   if (IsKeyDown(KEY_A)) {
     ship.MoveLeft();
-    cout << "a ";
   }
   if (IsKeyDown(KEY_D)) {
     ship.MoveRight();
-    cout << "d ";
   }
 
   if (IsKeyDown(KEY_SPACE)) {
     ship.FireLaser();
-    cout << "space";
   }
-  cout << endl;
 
   for (auto &laser : ship.lasers) {
     laser.Update();
@@ -80,7 +89,7 @@ void Game::deleteInactiveLasers() {
   for (auto it = alienLasers.begin(); it != alienLasers.end();) {
     if (!it->active) {
       it = alienLasers.erase(it);
-      cout << "deleted" << endl;
+
     } else {
       ++it;
     }

@@ -7,6 +7,8 @@
 #include "game.hpp"
 #include "laser.cpp"
 #include "laser.hpp"
+#include "mysteryship.cpp"
+#include "mysteryship.hpp"
 #include "obstacle.cpp"
 #include "obstacle.hpp"
 #include "spaceship.cpp"

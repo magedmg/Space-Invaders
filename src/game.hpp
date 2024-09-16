@@ -1,6 +1,7 @@
 #pragma once
 #include "alien.hpp"
 #include "laser.hpp"
+#include "mysteryship.hpp"
 #include "obstacle.hpp"
 #include "spaceship.hpp"
 
@@ -19,7 +20,12 @@ public:
   void MoveAliens();
   int direction;
 
+  Mysteryship mysteryship;
+
   std::vector<Laser> alienLasers;
   void AlienShootLaser();
   float alienshiplaserinterval;
+
+  int mysteryshipspawninterval;
+  float timeLastSpawn;
 };
