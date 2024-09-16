@@ -10,68 +10,60 @@
 #include <iostream>
 using namespace std;
 
-Game::Game() {
-  ship.Draw();
-
-  // goes through each of the elements. auto means you dont have to specify the
-  // type of each element. & uses a reference to the element to make the code
-  // more efficient. this is because it takes the address and not a copy of each
-  // one. add const so that the element is not modified in the loop
-  for (auto &laser : ship.lasers) {
-    laser.Draw();
-  }
-  obstacles = createObstacles();
-  aliens = createAliens();
-  direction = 1;
-  alienshiplaserinterval = 0;
-  mysteryshipspawninterval = GetRandomValue(10, 20);
-  timeLastSpawn = 0.0;
-}
+Game::Game() { InitGame(); }
 
 void Game::updateAll() {
 
-  double currentTime = GetTime();
+  if (run) {
+    double currentTime = GetTime();
 
-  if (currentTime - timeLastSpawn > mysteryshipspawninterval) {
-    mysteryship.Spawn();
-    timeLastSpawn = GetTime();
-    mysteryshipspawninterval = GetRandomValue(10, 20);
-  }
-  mysteryship.Draw();
-  mysteryship.Update();
+    if (currentTime - timeLastSpawn > mysteryshipspawninterval) {
+      mysteryship.Spawn();
+      timeLastSpawn = GetTime();
+      mysteryshipspawninterval = GetRandomValue(10, 20);
+    }
+    mysteryship.Draw();
+    mysteryship.Update();
 
-  ship.Draw();
-  if (IsKeyDown(KEY_A)) {
-    ship.MoveLeft();
-  }
-  if (IsKeyDown(KEY_D)) {
-    ship.MoveRight();
-  }
+    ship.Draw();
+    if (IsKeyDown(KEY_A)) {
+      ship.MoveLeft();
+    }
+    if (IsKeyDown(KEY_D)) {
+      ship.MoveRight();
+    }
 
-  if (IsKeyDown(KEY_SPACE)) {
-    ship.FireLaser();
-  }
+    if (IsKeyDown(KEY_SPACE)) {
+      ship.FireLaser();
+    }
 
-  for (auto &laser : ship.lasers) {
-    laser.Update();
-    laser.Draw();
-  }
-  deleteInactiveLasers();
-  // Laser::Update();
+    for (auto &laser : ship.lasers) {
+      laser.Update();
+      laser.Draw();
+    }
+    deleteInactiveLasers();
+    // Laser::Update();
 
-  for (auto &obstacle : obstacles) {
-    obstacle.Draw();
-  }
+    for (auto &obstacle : obstacles) {
+      obstacle.Draw();
+    }
 
-  for (auto &alien : aliens) {
-    alien.Draw();
-  }
-  MoveAliens();
-  AlienShootLaser();
+    for (auto &alien : aliens) {
+      alien.Draw();
+    }
+    MoveAliens();
+    AlienShootLaser();
 
-  for (auto &alienlaser : alienLasers) {
-    alienlaser.Draw();
-    alienlaser.Update();
+    for (auto &alienlaser : alienLasers) {
+      alienlaser.Draw();
+      alienlaser.Update();
+    }
+    checkForCollisions();
+  } else {
+    if (IsKeyDown(KEY_SPACE)) {
+      Reset();
+      InitGame();
+    }
   }
 }
 
@@ -142,7 +134,7 @@ void Game::MoveAliens() {
     if (aliens[10].position.x > GetScreenWidth() - 50) {
       direction = 0;
       for (auto &alien : aliens) {
-        alien.position.y += 4;
+        alien.position.y += 5;
       }
     }
   } else {
@@ -152,7 +144,7 @@ void Game::MoveAliens() {
     if (aliens[0].position.x < 10) {
       direction = 1;
       for (auto &alien : aliens) {
-        alien.position.y += 4;
+        alien.position.y += 5;
       }
     }
   }
@@ -170,4 +162,102 @@ void Game::AlienShootLaser() {
               6));
     alienshiplaserinterval = GetTime();
   }
+}
+
+void Game::checkForCollisions() {
+  // Spaceship lasers
+  for (auto &laser : ship.lasers) {
+    auto it = aliens.begin();
+    while (it != aliens.end()) {
+      if (CheckCollisionRecs(it->getrect(), laser.getrec())) {
+        it = aliens.erase(it);
+        laser.active = false;
+      } else {
+        it++;
+      }
+    }
+    for (auto &obstacle : obstacles) {
+      auto it = obstacle.blocks.begin();
+      while (it != obstacle.blocks.end()) {
+        if (CheckCollisionRecs(it->getrect(), laser.getrec())) {
+          it = obstacle.blocks.erase(it);
+          laser.active = false;
+        } else {
+          it++;
+        }
+      }
+    }
+    if (CheckCollisionRecs(mysteryship.getrect(), laser.getrec())) {
+      mysteryship.alive = false;
+      laser.active = false;
+    }
+  }
+  // Alien lasers
+
+  for (auto &laser : alienLasers) {
+    if (CheckCollisionRecs(laser.getrec(), ship.getrect())) {
+      lives--;
+      if (lives < 1) {
+        // ship.died();
+        run = false;
+      }
+      laser.active = false;
+    }
+
+    for (auto &obstacle : obstacles) {
+      auto it = obstacle.blocks.begin();
+      while (it != obstacle.blocks.end()) {
+        if (CheckCollisionRecs(it->getrect(), laser.getrec())) {
+          it = obstacle.blocks.erase(it);
+          laser.active = false;
+        } else {
+          it++;
+        }
+      }
+    }
+  }
+
+  for (auto &alien : aliens) {
+    if (CheckCollisionRecs(alien.getrect(), ship.getrect())) {
+      ship.died();
+    }
+    for (auto &obstacle : obstacles) {
+      auto it = obstacle.blocks.begin();
+      while (it != obstacle.blocks.end()) {
+        if (CheckCollisionRecs(it->getrect(), alien.getrect())) {
+          it = obstacle.blocks.erase(it);
+        } else {
+          it++;
+        }
+      }
+    }
+  }
+}
+
+void Game::Reset() {
+  ship.Reset();
+  aliens.clear();
+  alienLasers.clear();
+  obstacles.clear();
+}
+
+// this was copied from the constructor
+void Game::InitGame() {
+  ship.Draw();
+
+  // goes through each of the elements. auto means you dont have to specify the
+  // type of each element. & uses a reference to the element to make the code
+  // more efficient. this is because it takes the address and not a copy of each
+  // one. add const so that the element is not modified in the loop
+  for (auto &laser : ship.lasers) {
+    laser.Draw();
+  }
+  obstacles = createObstacles();
+  aliens = createAliens();
+  direction = 1;
+  alienshiplaserinterval = 0;
+  mysteryshipspawninterval = GetRandomValue(10, 20);
+  timeLastSpawn = 0.0;
+  lives = 3;
+  run = true;
 }

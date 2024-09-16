@@ -8,6 +8,7 @@ Spaceship::Spaceship() {
   position.x = (GetScreenWidth() - image.width) / 2.0;
   position.y = GetScreenHeight() - image.height;
   this->lastFiredTime = 0;
+  alive = true;
 }
 
 Spaceship::~Spaceship() {
@@ -15,8 +16,11 @@ Spaceship::~Spaceship() {
 } // need to unload the image once the game has finished to free up memory
 
 void Spaceship::Draw() {
-  DrawTextureV(image, position, WHITE); // draws a texture to a certain position
-                                        // and the position is held in a vector
+  if (alive) {
+    DrawTextureV(image, position, WHITE);
+  }
+  // draws a texture to a certain position
+  // and the position is held in a vector
 }
 
 void Spaceship::MoveLeft() {
@@ -48,4 +52,21 @@ void Spaceship::FireLaser() {
     lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y}, -6));
     lastFiredTime = GetTime();
   }
+}
+
+Rectangle Spaceship::getrect() {
+  return {position.x, position.y, float{static_cast<float>(image.width)},
+          float{static_cast<float>(image.height)}};
+}
+
+void Spaceship::died() {
+  alive = false;
+  // UnloadTexture(image);
+}
+
+void Spaceship::Reset() {
+  position.x = (GetScreenWidth() - image.width) / 2.0;
+  position.y = GetScreenHeight() - image.height;
+  DrawTextureV(image, position, WHITE);
+  lasers.clear();
 }

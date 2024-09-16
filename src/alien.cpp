@@ -37,3 +37,10 @@ void Alien::UnloadImages() {
 }
 
 void Alien::Update(int direction) { position.x += direction; }
+
+Rectangle Alien::getrect() {
+
+  return {position.x, position.y,
+          float{static_cast<float>(alienImages[type - 1].width)},
+          float{static_cast<float>(alienImages[type - 1].height)}};
+}

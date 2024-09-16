@@ -28,4 +28,10 @@ public:
 
   int mysteryshipspawninterval;
   float timeLastSpawn;
+
+  void checkForCollisions();
+  int lives;
+  bool run;
+  void Reset();
+  void InitGame();
 };
