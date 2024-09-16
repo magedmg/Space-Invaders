@@ -1,4 +1,6 @@
 
+#include "alien.cpp"
+#include "alien.hpp"
 #include "block.cpp"
 #include "block.hpp"
 #include "game.cpp"
@@ -25,8 +27,7 @@ int main() {
 
   SetTargetFPS(60); // while loop will be faster without a target fps (which
                     // means it will look different on machines )
-
-  Game game; // draws the spaceeship to the screen
+  Game game;        // draws the spaceeship to the screen
   while (!WindowShouldClose()) {
 
     BeginDrawing();

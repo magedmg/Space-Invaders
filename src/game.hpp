@@ -1,4 +1,5 @@
 #pragma once
+#include "alien.hpp"
 #include "laser.hpp"
 #include "obstacle.hpp"
 #include "spaceship.hpp"
@@ -12,4 +13,13 @@ public:
   Game();
   void updateAll();
   std::vector<Obstacle> obstacles;
+  std::vector<Alien> aliens;
+  std::vector<Alien> createAliens();
+  ~Game();
+  void MoveAliens();
+  int direction;
+
+  std::vector<Laser> alienLasers;
+  void AlienShootLaser();
+  float alienshiplaserinterval;
 };
