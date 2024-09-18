@@ -96,7 +96,7 @@ std::vector<Obstacle> Game::createObstacles() {
 
   for (int i = 0; i < 4; i++) {
     float offsetX = (i + 1) * gap + i * obstaclewidth;
-    obstacles.push_back(Obstacle({offsetX, float(GetScreenHeight() - 100)}));
+    obstacles.push_back(Obstacle({offsetX, float(GetScreenHeight() - 200)}));
   }
   return obstacles;
 }
@@ -131,7 +131,7 @@ void Game::MoveAliens() {
     for (auto &alien : aliens) {
       alien.Update(movement);
     }
-    if (aliens[10].position.x > GetScreenWidth() - 50) {
+    if (aliens[10].position.x > GetScreenWidth() - 75) {
       direction = 0;
       for (auto &alien : aliens) {
         alien.position.y += 5;
@@ -141,7 +141,7 @@ void Game::MoveAliens() {
     for (auto &alien : aliens) {
       alien.Update(-movement);
     }
-    if (aliens[0].position.x < 10) {
+    if (aliens[0].position.x < 25) {
       direction = 1;
       for (auto &alien : aliens) {
         alien.position.y += 5;

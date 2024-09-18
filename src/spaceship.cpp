@@ -6,7 +6,7 @@
 Spaceship::Spaceship() {
   image = LoadTexture("Graphics/spaceship.png");
   position.x = (GetScreenWidth() - image.width) / 2.0;
-  position.y = GetScreenHeight() - image.height;
+  position.y = GetScreenHeight() - image.height - 100;
   this->lastFiredTime = 0;
   alive = true;
 }
@@ -32,8 +32,8 @@ void Spaceship::MoveLeft() {
   */
   position.x -= 10;
 
-  if (position.x < 0) {
-    position.x = 0;
+  if (position.x < 25) {
+    position.x = 25;
   }
 
   // DrawTextureV(image, position, WHITE);
@@ -41,8 +41,8 @@ void Spaceship::MoveLeft() {
 void Spaceship::MoveRight() {
 
   position.x += 10;
-  if (position.x > GetScreenWidth() - image.width) {
-    position.x = GetScreenWidth() - image.width;
+  if (position.x > GetScreenWidth() - image.width - 25) {
+    position.x = GetScreenWidth() - image.width - 25;
   }
   // DrawTextureV(image, position, WHITE);
 }
@@ -66,7 +66,7 @@ void Spaceship::died() {
 
 void Spaceship::Reset() {
   position.x = (GetScreenWidth() - image.width) / 2.0;
-  position.y = GetScreenHeight() - image.height;
+  position.y = GetScreenHeight() - image.height - 100;
   DrawTextureV(image, position, WHITE);
   lasers.clear();
 }

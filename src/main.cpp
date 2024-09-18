@@ -21,11 +21,16 @@ using namespace std;
 int main() {
 
   Color grey = {29, 29, 27, 255}; // colour is a struct here, called grey
+  Color yellow = {243, 216, 63, 255};
+  int offset = 50;
 
   int windowWidth = 750;
   int windowHeight = 700;
 
-  InitWindow(windowWidth, windowHeight, "Space Invadors");
+  // Font font = LoadFontEx("", int fontSize, int *codepoints, int
+  // codepointCount)
+
+  InitWindow(windowWidth + offset, windowHeight + offset * 2, "Space Invadors");
 
   SetTargetFPS(60); // while loop will be faster without a target fps (which
                     // means it will look different on machines )
@@ -35,7 +40,10 @@ int main() {
     BeginDrawing();
     ClearBackground(grey); // every frame there is a new clear background so
                            // that there isnt old artifacts from previous frames
+    DrawRectangleRoundedLines({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+    DrawLineEx({25, 730}, {775, 730}, 3, yellow);
     game.updateAll();
+
     EndDrawing();
   }
 
